@@ -1,0 +1,27 @@
+在eclpse中构建maven项目
+    一、准备条件
+       1.安装jdk
+       2.安装eclpse  
+            官网：http://www.eclpse.org/
+       3.安装tomcat6
+       4.安装maven
+       5.安装eclpse maven插件
+            地址：http://m2eclpse.sonatype.org/sites/m2e
+
+    二、配置
+       1.在eclpse中配置jdk安装位置，tomcant安装位置，maven安装位置，位tomcat指定jdk
+       2.在eclipse中新建一个maven项目
+       2-1.新建一个maven项目，选择create a simple project...
+       2-2.配置Group Id(即项目名称)、artifact Id同Group Id，packaging选择war,点击next
+       2-3.右键点击项目，选择properites，选择Project Facets，点击超链接Convert Faceted from
+       2-4.在Configuration中选择custom
+           在下方的Project Facet的Dynamic Web Module 中选择2.5版本
+           在java中选择1.6
+           在右侧选择Runtime面板，选择tomcat或者new
+       2-6.项目右键properites，选择Deployment Assembly选项，在右边Web Deployment Assembly
+            出现四项：/src/main/java、/src/main/resources、/src/test/jave、/src/test/resources对应WEB-INF/classes
+                      /src/main/webapp对应 / 
+                添加：选择add,选择Java Build Path Entries，选择Maven Dependencies，点击finish
+
+   三、运行
+       1.在eclipse的server视图中添加自己的项目，右键选择tomcat 服务器，选择add and remove

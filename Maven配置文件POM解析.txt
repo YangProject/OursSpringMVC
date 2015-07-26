@@ -1,0 +1,155 @@
+  
+   maven pom.xml解读：
+
+     pom即Project Object Model，项目对象模型。
+     pom.xml是maven的项目描述文件，文件以xml的形式，包括项目名称、版本、项目ID、项目依赖关系、编译环境、持续集成、项目团队、贡献管理、生成报表等等。
+ 
+     1、pom的基本配置
+
+       <project xmlns="http://maven.apache.org/POM/4.0.0"
+	         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+		                     http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groudId>SpringMVCProject</groupId>
+	<artifactId>SpringMVCProject</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+       </project>
+
+       解析：
+          modelVersion  描述pom文件遵循哪个版本的项目描述符
+	  groudId       项目或组织的唯一标志，配置时生成路径由此生成。如SpringMVCProject生成路径为：/SpringMVCProject
+          artifactId    项目通用名称
+	  version       项目的版本
+	  packaging     打包机制，如pom,jar,maven-plugin,ejb,war,ear,rar,par
+	  name          用户描述项目名称，可选
+	  url           开发团队网站，可选
+
+      2、pom.xml的文件结构
+
+         <project>
+            <modelVersion>4.0.0</modelVersion>
+            <!--maven2.0必须是这样写，现在是maven2唯一支持的版本-->
+            <!-- 基础设置 -->
+            <groupId>...</groupId>
+            <artifactId>...</artifactId>
+            <version>...</version>
+            <packaging>...</packaging>
+
+            <name>...</name>
+
+            <url>...</url>
+  
+            <dependencies>...</dependencies>
+            <parent>...</parent>
+            <dependencyManagement>...</dependencyManagement>
+            <modules>...</modules>
+            <properties>...</properties>
+
+            <!--构建设置 -->
+            <build>...</build>
+            <reporting>...</reporting>
+
+            <!-- 更多项目信息 -->
+            <name>...</name>
+            <description>...</description>
+            <url>...</url>
+            <inceptionYear>...</inceptionYear>
+            <licenses>...</licenses>
+            <organization>...</organization>
+            <developers>...</developers>
+            <contributors>...</contributors>
+
+            <!-- 环境设置-->
+            <issueManagement>...</issueManagement>
+            <ciManagement>...</ciManagement>
+            <mailingLists>...</mailingLists> 
+            <scm>...</scm>
+            <prerequisites>...</prerequisites>
+            <repositories>...</repositories>
+            <pluginRepositories>...</pluginRepositories>
+            <distributionManagement>...</distributionManagement>
+            <profiles>...</profiles>
+         </project>
+
+      3、pom的3个关系：
+          
+	  依赖、继承、合成
+
+      4、依赖关系
+
+          <dependencies>
+	      <dependency>
+	          <groudId>junit</groudId>
+                  <artifactId>junit</artifactId>
+		  <version>3.8.1</version>
+		  <type>jar</type>
+		  <scope>test</scope>
+		  <optional>true</optional>
+	      </dependency>
+	      ....
+	  </dependencies>
+         
+	 解析：
+	     type:默认类型jar,常用类型有：jar,ejb-client,test-jar,可设置plugins中的extensions值为true后，增加新的类型
+	     scope:指定当前包的依赖范围，maven的依赖范围
+	     optional:设置依赖是否可选，默认false,即子项目默认都继承；为true则子项目必需显示的引入，与dependencyManagement里定义的依赖类似 。
+             exclusions：如果X需要A,A包含B依赖，那么X可以声明不要B依赖，只要在exclusions中声明exclusion.
+             exclusion:是将B从依赖树中删除，如上配置，alibaba.apollo.webx不想使用com.alibaba.external  ,但是alibaba.apollo.webx是集成了com.alibaba.external,r所以就需要排除掉.
+
+       5、parent的使用
+            
+            定义父项目：
+
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+		<groupId>mygroup</groupId>
+		<artifactId>my-parent</artifactId>
+	        <version>2.0</version>
+		<packaging>pom</packaging>
+	    </project>
+
+	    定义子项目：
+
+             <project>
+                 <modelVersion>4.0.0</modelVersion>
+                 <groupId>mygroup </groupId>
+                 <artifactId>my-child-project</artifactId>
+                 <parent>
+                    <groupId>mygroup </groupId>
+                    <artifactId>my-parent</artifactId>
+                    <version>2.0</version>
+                    <relativePath>../my-parent</relativePath>
+                 </parent>
+             </project>
+
+	     合成关系：
+
+	      <project>
+                 <modelVersion>4.0.0</modelVersion>
+                 <groupId>com.mygroup </groupId>
+                 <artifactId>my-parent</artifactId>
+                 <version>2.0</version>
+                 <modules>
+                    <module>my-child-project1<module>
+                    <module>my-child-project2<module>
+                 </modules>
+              </project>
+
+	    dependencyManagement: 用户帮助管理children的dependencies的。
+	    modules:对于多模块的project、outer-module没有必须考虑inner-module的dependencies
+
+	 6、properties：是pom定义一些产量，在pom中其他地方可以直接引用。
+
+	    定义：
+              
+	      <properties>
+	       <file.encoding>UTF-8</file_encoding>
+	       <java.sourse.version>1.5</java_sourse_version>
+	       <java.target.version>1.5</java_target_version>
+	      </properties>
+
+	     使用方法：
+
+	        ${file.encoding}
